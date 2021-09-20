@@ -1,0 +1,9 @@
+<launch>
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" > 
+     <arg name="port" value="8080"/>
+	<!-- <arg name="address" default="albepi.local" /> -->
+  </include>
+
+  <node name="reader" pkg="mpu_6050_reader" type="reader.py" cwd = "node"  output="screen" />
+
+</launch>
