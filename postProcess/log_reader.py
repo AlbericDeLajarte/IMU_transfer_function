@@ -7,7 +7,6 @@ import rosbag
 
 import numpy as np
 import math
-import matplotlib.pyplot as plt
 from scipy.spatial.transform import Rotation as R
 from scipy import interpolate
 import time
