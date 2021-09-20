@@ -5,5 +5,6 @@
   </include>
 
   <node name="reader" pkg="mpu_6050_reader" type="reader.py" cwd = "node"  output="screen" />
+  <node pkg="rosbag" type="record" name="recorder" args="record -a -O $(find mpu_6050_reader)/log/log.bag"/>
 
 </launch>
