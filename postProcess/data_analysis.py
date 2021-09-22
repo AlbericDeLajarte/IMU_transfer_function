@@ -10,19 +10,24 @@ data = np.loadtxt("log/log.txt", delimiter=", ").T
 
 time_in = data[0]
 acc_in = data[1:4, :]
+acc_in -= np.array([acc_in.mean(axis=1)]).T
+
 #gyro_in = data[4:7, :]
 
 time_out = data[4]
 acc_out = data[5:, :]
+acc_out -= np.array([acc_out.mean(axis=1)]).T
 
 #time_out = data[7]
 #acc_out = data[8:11, :]
 #gyro_out = data[11:, :]
 
+print("Experiment duration: {:.3f} | mean sampling rate: {:.3f} ms (SD: {:.3f})".format(max(time_in), 1000*np.mean(np.diff(time_in)), 1000*np.std(np.diff(time_in))))
+
 # ------------ Compute FFT ------------
 
 time_period = np.mean(np.diff(time_in))
-min_frequ_fft = 0.3
+min_frequ_fft = 0.1
 N_sample = int((1/time_period)/min_frequ_fft)
 #N_sample = len(time_in)
 #print(time_period)
@@ -46,8 +51,7 @@ for i in range(n_segment):
 
 TF_acc = FFT_acc_out/FFT_acc_in
 
-bode_magnitude = 20*np.log(abs(TF_acc[2]))
-bode_magnitude_raw = 20*np.log(abs(fft(acc_out[0, 0:N_sample])/fft(acc_in[0, 0:N_sample])))[0:N_sample//2]
+
 
 
 # ------------ Plot results ------------
@@ -58,15 +62,35 @@ bode_magnitude_raw = 20*np.log(abs(fft(acc_out[0, 0:N_sample])/fft(acc_in[0, 0:N
 #plt.plot(frequ, abs(FFT_acc_out[0])/abs(FFT_acc_in[0]), frequ, abs(FFT_acc_out[1])/abs(FFT_acc_in[1]), frequ, abs(FFT_acc_out[2])/abs(FFT_acc_in[2]))
 #plt.plot(frequ, abs(FFT_gyro_out[0])/abs(FFT_gyro_in[0]), frequ, abs(FFT_gyro_out[1])/abs(FFT_gyro_in[1]), frequ, abs(FFT_gyro_out[2])/abs(FFT_gyro_in[2]))
 
-#plt.plot(abs(FFT_acc_out[2, :]))
-#plt.plot(frequ, bode_magnitude_raw)
-# plt.plot(frequ, bode_magnitude)
-# plt.plot(frequ, savgol_filter(bode_magnitude, 5, 3))
-
-fig, axs = plt.subplots(2, 3)
+fig, axs = plt.subplots(1, 3, figsize=(12,5))
+fig.tight_layout()
 for i, ax in enumerate(axs.flatten()):
-    ax.plot(frequ, bode_magnitude)
-    ax.plot(frequ, savgol_filter(bode_magnitude, 11 + 6*i, 3))
+
+    bode_magnitude = 20*np.log(abs(TF_acc[i]))
+    bode_magnitude_raw = 20*np.log(abs(fft(acc_out[i, 0:N_sample])/fft(acc_in[i, 0:N_sample])))[0:N_sample//2]
+
+    ax.plot(frequ, 20*np.log(abs(FFT_acc_in[i, :])))
+
+    # ax.plot(frequ, bode_magnitude, label="averaged")
+    # ax.plot(frequ, savgol_filter(bode_magnitude, 51, 3), label="fit")
+
+    # ax.plot(time_in, acc_out[i], label="output")
+    # ax.plot(time_in, acc_in[i], label="input")
+
+    # plt.plot(frequ, bode_magnitude_raw, label= "raw")
+    # plt.plot(frequ, savgol_filter(bode_magnitude_raw, 51, 3))
+
+    ax.legend()
+    ax.set_xlabel("Frequency [Hz]")
+    ax.set_ylabel("Magnitude [dB]")
+    ax.set_title("Bode diagram for acceleration {}".format(["X", "Y", "Z"][i]))
+
+
+
+# fig, axs = plt.subplots(2, 3)
+# for i, ax in enumerate(axs.flatten()):
+#     ax.plot(frequ, bode_magnitude)
+#     ax.plot(frequ, savgol_filter(bode_magnitude, 11 + 6*i, 3))
 
 #plt.xscale('log')
 
