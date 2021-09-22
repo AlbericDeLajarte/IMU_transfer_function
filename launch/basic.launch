@@ -1,4 +1,7 @@
 <launch>
+
+  <rosparam file="$(find mpu_6050_reader)/config/test_config.yaml" />
+
   <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" > 
      <arg name="port" value="8080"/>
 	<!-- <arg name="address" default="albepi.local" /> -->
