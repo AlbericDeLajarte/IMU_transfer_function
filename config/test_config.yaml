@@ -1,0 +1,4 @@
+accelerometer: true
+gyroscope: false
+
+real_time_fft: false
