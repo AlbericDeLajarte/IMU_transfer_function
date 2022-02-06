@@ -1,3 +1,9 @@
+# This scripts analyse IMU data to estimate the frequency response of your system based
+# on comparison of input/output measurement.
+
+# To use the more advanced parametric methods (ARMAX), you will need to install the libraries
+# sippy and control.matlab
+
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import interpolate
@@ -11,7 +17,7 @@ import control.matlab as cnt
 def movmean(x, w):
     return np.convolve(x, np.ones(w), 'same') / w
 
-# ------------ Get data ------------
+# ------------ Parse data ------------
 
 data = np.loadtxt("log/log.txt", delimiter=", ").T
 
@@ -46,11 +52,6 @@ acc_in = np.vstack((acc_in, acc_in[1, :]+acc_in[2, :]))
 acc_out -= np.array([acc_out.mean(axis=1)]).T
 acc_out = np.vstack((acc_out, acc_out[1, :]+acc_out[2, :]))
 
-#time_out = data[7]
-#acc_out = data[8:11, :]
-#gyro_out = data[11:, :]
-#gyro_in = data[4:7, :]
-
 print("Experiment duration: {:.3f} | mean sampling rate: {:.3f} ms (SD: {:.3f})".format(max(time_in), 1000*np.mean(np.diff(time_in)), 1000*np.std(np.diff(time_in))))
 
 # ------------ Compute FFT ------------
@@ -58,8 +59,6 @@ print("Experiment duration: {:.3f} | mean sampling rate: {:.3f} ms (SD: {:.3f})"
 time_period = np.mean(np.diff(time_in))
 min_frequ_fft = 0.1
 N_sample = int((1/time_period)/min_frequ_fft)
-#N_sample = len(time_in)
-#print(time_period)
 
 FFT_acc_in = np.zeros((4, N_sample//2),dtype=np.complex_)
 FFT_acc_out = np.zeros((4, N_sample//2),dtype=np.complex_)
@@ -88,6 +87,7 @@ for i in range(4):
 
 #TF_ARMAX.append(si.system_identification(acc_out_horizontal, acc_in_horizontal, 'ARMAX', IC='BIC', na_ord=[15, 15], nb_ord=[15, 15],
  #                                   nc_ord=[15, 15], delays=[1, 1], max_iterations=200, ARMAX_mod = 'ILLS', tsample=time_period))
+
 # ------------ Plot results ------------
 
 #plt.plot(time_in, acc_in[0], time_out, acc_out[0])

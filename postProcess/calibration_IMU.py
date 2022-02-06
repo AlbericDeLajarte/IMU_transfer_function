@@ -1,3 +1,11 @@
+# This file is used to calibrate an IMU (3D accelerometer and gyroscope) from
+# raw data. It estimates the bias and gain of each of the 6 sensors automatically
+# based on gravity measurement and gyroscope integration.
+
+# See "Marco Ferraris, Franco and Grimaldi, Ugo and Parvis. Procedure for effortless in-
+# field calibration of three-axis rate gyros and accelerometers. Sensors and Materials,
+# 7:311–311, 1995."
+
 import matplotlib.pyplot as plt
 import numpy as np 
 from scipy import integrate
@@ -13,11 +21,9 @@ def movmean(x, w):
     return np.convolve(x, np.ones(w), 'same') / w
 
 
-#read data
+# Read data
 sensors = ['t', 'Ax', 'Ay', 'Az', 'Gx', 'Gy', 'Gz']
 data = {}
-#filename = input('filename?')#'C:\\Users\\anith\\Downloads\\data_IMU_test_2.txt' # #input('filename?\n')
-#filename = 'C:\\Users\\anith\\OneDrive\\Documents\\MATLAB\\acceleration.txt'
 filename = 'postProcess/calib_file/log2.txt'
 
 

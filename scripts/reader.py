@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # license removed for brevity
 
+# This file creates a ROS node to read data from two IMU
+# Use the launch file to start this node
+
 import numpy as np
 from scipy.fft import fft, fftfreq
 
@@ -26,6 +29,7 @@ use_acc = rospy.get_param("accelerometer")
 use_gyro = rospy.get_param("gyroscope")
 do_fft = rospy.get_param("real_time_fft")
 
+# These values were obtained with the script "calibration_IMU.py"
 IMU_calib = [
     {"acc_gain": np.array([0.9997, 0.9983, 1.0242]), "acc_bias": np.array([0.5608, -0.0070, -1.7242]),
      "gyro_gain": np.array([0.9871, 0.9907, 1.0292]), "gyro_bias": np.array([-0.0073, -0.0064, -0.0315])

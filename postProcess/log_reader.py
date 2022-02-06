@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# This script converts rosbag containing raw IMU data into a text file.
+# This allows to run ROS on a Raspberry Pi, then download the text file 
+# to another commputer to analyse data.
+
 import rospy
 import rospkg
 import rosbag
